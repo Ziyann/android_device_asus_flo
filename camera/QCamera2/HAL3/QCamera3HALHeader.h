@@ -61,6 +61,7 @@ namespace qcamera {
         float f_number;
         int wb;
         uint32_t flash;
+        int32_t sharpness;
     } jpeg_settings_t;
 
     typedef struct {
