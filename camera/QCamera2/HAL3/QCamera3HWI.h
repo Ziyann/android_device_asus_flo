@@ -207,6 +207,10 @@ private:
         int input_buffer_present;
         cam_trigger_t ae_trigger;
     } PendingRequestInfo;
+    typedef struct {
+        uint32_t frame_number;
+        uint32_t stream_type_mask;;
+    } PendingFrameDropInfo;
     typedef KeyedVector<camera3_stream_t *, uint32_t> PendingBuffersMap;
     /*Data structure to store metadata information*/
     typedef struct {
@@ -217,6 +221,7 @@ private:
 
     List<MetadataBufferInfo> mStoredMetadataList;
     List<PendingRequestInfo> mPendingRequestsList;
+    List<PendingFrameDropInfo> mPendingFrameDropList;
     PendingBuffersMap mPendingBuffersMap;
     pthread_cond_t mRequestCond;
     int mPendingRequest;
