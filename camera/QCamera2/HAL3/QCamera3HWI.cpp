@@ -184,7 +184,7 @@ QCamera3HardwareInterface::QCamera3HardwareInterface(int cameraId)
       mPrecaptureId(0)
 {
     mCameraDevice.common.tag = HARDWARE_DEVICE_TAG;
-    mCameraDevice.common.version = CAMERA_DEVICE_API_VERSION_3_0;
+    mCameraDevice.common.version = CAMERA_DEVICE_API_VERSION_3_1;
     mCameraDevice.common.close = close_camera_device;
     mCameraDevice.ops = &mCameraOps;
     mCameraDevice.priv = this;
@@ -2972,7 +2972,7 @@ int QCamera3HardwareInterface::getCamInfo(int cameraId,
 
 
     info->orientation = gCamCapability[cameraId]->sensor_mount_angle;
-    info->device_version = CAMERA_DEVICE_API_VERSION_3_0;
+    info->device_version = CAMERA_DEVICE_API_VERSION_3_1;
     info->static_camera_characteristics = gStaticMetadata[cameraId];
 
     return rc;
