@@ -2649,9 +2649,11 @@ camera_metadata_t* QCamera3HardwareInterface::translateCapabilityToMetadata(int 
     int64_t default_exposure_time = gCamCapability[mCameraId]->exposure_time_range[0];
     settings.update(ANDROID_SENSOR_EXPOSURE_TIME, &default_exposure_time, 1);
 
+#if 0
     /* frame duration */
     int64_t default_frame_duration = NSEC_PER_33MSEC;
     settings.update(ANDROID_SENSOR_FRAME_DURATION, &default_frame_duration, 1);
+#endif
 
     /* sensitivity */
     int32_t default_sensitivity = 100;
