@@ -842,6 +842,7 @@ int QCamera3HardwareInterface::processCaptureRequest(
 
     pthread_mutex_lock(&mMutex);
 
+#if 0
     // For first capture request, stream on all streams
     if (mFirstRequest) {
         for (List<stream_info_t *>::iterator it = mStreamInfo.begin();
@@ -850,6 +851,7 @@ int QCamera3HardwareInterface::processCaptureRequest(
             channel->start();
         }
     }
+#endif
 
     rc = validateCaptureRequest(request);
     if (rc != NO_ERROR) {
