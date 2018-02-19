@@ -2551,8 +2551,7 @@ int QCamera3HardwareInterface::initStaticMetadata(int cameraId)
 
     uint8_t available_capabilities[] =
         {ANDROID_REQUEST_AVAILABLE_CAPABILITIES_BACKWARD_COMPATIBLE,
-         ANDROID_REQUEST_AVAILABLE_CAPABILITIES_MANUAL_SENSOR,
-         ANDROID_REQUEST_AVAILABLE_CAPABILITIES_GCAM};
+         ANDROID_REQUEST_AVAILABLE_CAPABILITIES_MANUAL_SENSOR};
     staticInfo.update(ANDROID_REQUEST_AVAILABLE_CAPABILITIES,
                       available_capabilities,
                       3);
