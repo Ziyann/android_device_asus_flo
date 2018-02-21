@@ -1755,6 +1755,9 @@ QCamera3HardwareInterface::translateCbMetadataToResultMetadata
         (uint8_t *)POINTER_OF(CAM_INTF_META_FLASH_STATE, metadata);
     camMetadata.update(ANDROID_FLASH_STATE, flashState, 1);
 
+    static const uint8_t flashMode = ANDROID_FLASH_MODE_OFF;
+    camMetadata.update(ANDROID_FLASH_MODE, &flashMode, 1);
+
     uint8_t  *hotPixelMode =
         (uint8_t *)POINTER_OF(CAM_INTF_META_HOTPIXEL_MODE, metadata);
     camMetadata.update(ANDROID_HOT_PIXEL_MODE, hotPixelMode, 1);
@@ -2288,11 +2291,6 @@ int QCamera3HardwareInterface::initStaticMetadata(int cameraId)
     staticInfo.update(ANDROID_STATISTICS_INFO_MAX_SHARPNESS_MAP_VALUE,
             &gCamCapability[cameraId]->max_sharpness_map_value, 1);
 
-
-    staticInfo.update(ANDROID_SCALER_AVAILABLE_RAW_MIN_DURATIONS,
-                      &gCamCapability[cameraId]->raw_min_duration,
-                       1);
-
     int32_t scalar_formats[] = {HAL_PIXEL_FORMAT_YCbCr_420_888,
                                 HAL_PIXEL_FORMAT_BLOB,
                            HAL_PIXEL_FORMAT_IMPLEMENTATION_DEFINED};
@@ -2308,10 +2306,6 @@ int QCamera3HardwareInterface::initStaticMetadata(int cameraId)
     staticInfo.update(ANDROID_SCALER_AVAILABLE_PROCESSED_SIZES,
                 available_processed_sizes,
                 (gCamCapability[cameraId]->picture_sizes_tbl_cnt) * 2);
-
-    staticInfo.update(ANDROID_SCALER_AVAILABLE_PROCESSED_MIN_DURATIONS,
-                      &gCamCapability[cameraId]->jpeg_min_duration[0],
-                      gCamCapability[cameraId]->picture_sizes_tbl_cnt);
 
     int32_t available_fps_ranges[MAX_SIZES_CNT * 2];
     makeFPSTable(gCamCapability[cameraId]->fps_ranges_tbl,
@@ -2727,6 +2721,27 @@ int QCamera3HardwareInterface::initStaticMetadata(int cameraId)
     staticInfo.update(ANDROID_REQUEST_AVAILABLE_CHARACTERISTICS_KEYS,
                       available_characteristics_keys,
                       sizeof(available_characteristics_keys)/sizeof(int32_t));
+
+    /*available stall durations depend on the hw + sw and will be different for different devices */
+    /*have to add for raw after implementation*/
+    int32_t stall_formats[] = {HAL_PIXEL_FORMAT_BLOB};
+    size_t stall_formats_count = sizeof(stall_formats)/sizeof(int32_t);
+
+    size_t available_stall_size = gCamCapability[cameraId]->picture_sizes_tbl_cnt * 4;
+    int64_t available_stall_durations[available_stall_size];
+    idx = 0;
+    for (uint32_t j = 0; j < stall_formats_count; j++) {
+       for (uint32_t i = 0; i < gCamCapability[cameraId]->picture_sizes_tbl_cnt; i++) {
+          available_stall_durations[idx]   = stall_formats[j];
+          available_stall_durations[idx+1] = gCamCapability[cameraId]->picture_sizes_tbl[i].width;
+          available_stall_durations[idx+2] = gCamCapability[cameraId]->picture_sizes_tbl[i].height;
+          available_stall_durations[idx+3] = 5 * NSEC_PER_33MSEC;
+          idx+=4;
+       }
+    }
+    staticInfo.update(ANDROID_SCALER_AVAILABLE_STALL_DURATIONS,
+                      available_stall_durations,
+                      idx);
 
     gStaticMetadata[cameraId] = staticInfo.release();
     return rc;
